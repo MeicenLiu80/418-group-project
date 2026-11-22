@@ -92,20 +92,6 @@ When discussing the 4- and 8-group comparison, note that the number and width of
 
 The fixed split files are provided so the experiments can reuse the same train, validation, and test assignments. The notebooks report validation metrics during model selection and reserve the test split for final evaluation.
 
-## Notes for writing the project report
-
-The course asks for a 4–6 page, double-column academic paper with at least Introduction, Related Work, Methods, Results, Conclusion, and References. The following outline maps the archived work to those sections; it is a guide for writing, not a substitute for checking the actual notebooks and results.
-
-| Required section | Project-specific content to cover |
-|---|---|
-| **Introduction** | Explain the practical goal: predict a broad age interval from a face image, not an exact age. Motivate the four- versus eight-group settings and summarize the progression from Face-Age-10K to UTKFace. State the questions listed above. |
-| **Related Work** | Summarize prior CNN-based facial age estimation and age-group classification. Introduce the datasets using their original dataset sources, and explain how this project differs in task formulation (discrete age intervals). Cite the sources actually consulted; do not use this README as the only scholarly reference. |
-| **Methods** | Describe data sources and exclusions, the exact age-to-group mappings, image resizing and RGB input, fixed data splits, `SmallAgeCNN`, optimizer, learning rate, batch size, epochs, software/hardware if recorded, and evaluation metrics. Describe the class-weighting experiment as a separate comparison. |
-| **Results** | Present the four baseline test results in the table above. Add a compact comparison table or figure and use per-class F1/confusion matrices to explain errors. Report the class-weighting numbers separately and call out its accuracy–macro-F1 trade-off. Include the number of runs and avoid implying statistical significance. |
-| **Conclusion** | Summarize that the four-group task performed better in these runs, the larger dataset alone did not yield strong results, and performance remains limited. Describe increased CNN complexity as a proposed next improvement unless a separate deeper-model experiment and its results are added to the evidence. |
-| **References** | Cite the original Face-Age-10K and UTKFace sources, relevant peer-reviewed work on facial age estimation/classification, and any software or methods sources required by the chosen citation style. Verify bibliographic details from the original publications. |
-
-For reproducibility, the report should make clear which numbers come from the original baseline runs and which come from the additional weighted-loss comparison. It should also acknowledge the limitations of one run per condition for the weighting comparison, class imbalance, possible dataset differences, and the modest performance. Do not describe the deeper-CNN direction as a measured improvement: no such run is included in this repository at present.
 
 ## Limitations
 
