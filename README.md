@@ -8,6 +8,16 @@ We began with the Face-Age-10K dataset and tested two classification settings: f
 
 This led us to focus on the model as well as the data. Our improvement direction is to increase the CNN's complexity and capacity, then assess whether a stronger model improves age-group recognition. The notebooks and checkpoints currently published here document the compact CNN baselines and an additional class-weighting comparison; they do not include a separate deeper-CNN run. The scores below therefore refer to the baseline experiments.
 
+### Questions guiding the experiments
+
+The project can be described through three practical questions:
+
+1. How well can a CNN classify a face into broad age intervals rather than estimate an exact age?
+2. How do the results change when the task uses four intervals instead of eight, and when the experiments use the larger UTKFace dataset?
+3. Does class weighting change the balance between overall accuracy and performance on less represented age groups?
+
+The experiments suggest that coarser age intervals are easier for this baseline, and that using more images by itself does not remove the difficulty. The class-weighting comparison also illustrates that a metric averaged across classes can improve while accuracy falls. These are observations from the recorded runs, not claims that dataset size or class imbalance alone caused the outcomes.
+
 ## Datasets and age groups
 
 - **Face-Age-10K:** 9,165 images used in the reported experiments.
@@ -47,6 +57,18 @@ Weighting raised the F1 score for the `66+` group from 27.41% to 38.20%, while r
 
 The archived baseline notebooks use `SmallAgeCNN`: three convolutional blocks with 32, 64, and 128 channels, ReLU activations, max pooling, adaptive average pooling, dropout, and a linear classification head. Images are resized to 200 × 200 RGB. The main training configuration uses seed 418, batch size 64, Adam with learning rate 0.001, and 10 epochs.
 
+The repository contains fixed train/validation/test split index files. The published experiment records use 6,415 / 1,375 / 1,375 examples for Face-Age-10K and 16,594 / 3,557 / 3,557 for UTKFace, respectively. The notebooks use validation results during model selection and report final performance on the held-out test split. Report the grouping definitions alongside every result: the eight-class final boundary differs slightly between datasets.
+
+The supplemental weighting experiment changes the cross-entropy loss using class weights calculated from the training labels. It compares one standard-loss run with one weighted-loss run on UTKFace's four-class task. This is useful as an exploratory imbalance analysis, but the single run per condition is not enough to establish a robust causal effect.
+
+### Metrics and interpretation
+
+- **Accuracy** is the share of test images assigned to the correct age group. It gives a simple overall measure but can be dominated by common groups.
+- **Macro-F1** computes F1 separately for each group and averages the group scores equally. It makes weak performance on a smaller group more visible.
+- **Per-class F1 and confusion matrices** show which age intervals are difficult and which neighboring groups are commonly confused. Use the saved reports and matrices under `results/tables/` and `results/figures/` rather than inferring class-level outcomes from accuracy alone.
+
+When discussing the 4- and 8-group comparison, note that the number and width of labels change the task difficulty. When comparing datasets, note that both dataset composition and the eight-group boundary definitions differ; these runs are not a controlled test of dataset size alone.
+
 ## Repository layout
 
 ```text
@@ -70,6 +92,23 @@ The archived baseline notebooks use `SmallAgeCNN`: three convolutional blocks wi
 
 The fixed split files are provided so the experiments can reuse the same train, validation, and test assignments. The notebooks report validation metrics during model selection and reserve the test split for final evaluation.
 
+## Notes for writing the project report
+
+The course asks for a 4–6 page, double-column academic paper with at least Introduction, Related Work, Methods, Results, Conclusion, and References. The following outline maps the archived work to those sections; it is a guide for writing, not a substitute for checking the actual notebooks and results.
+
+| Required section | Project-specific content to cover |
+|---|---|
+| **Introduction** | Explain the practical goal: predict a broad age interval from a face image, not an exact age. Motivate the four- versus eight-group settings and summarize the progression from Face-Age-10K to UTKFace. State the questions listed above. |
+| **Related Work** | Summarize prior CNN-based facial age estimation and age-group classification. Introduce the datasets using their original dataset sources, and explain how this project differs in task formulation (discrete age intervals). Cite the sources actually consulted; do not use this README as the only scholarly reference. |
+| **Methods** | Describe data sources and exclusions, the exact age-to-group mappings, image resizing and RGB input, fixed data splits, `SmallAgeCNN`, optimizer, learning rate, batch size, epochs, software/hardware if recorded, and evaluation metrics. Describe the class-weighting experiment as a separate comparison. |
+| **Results** | Present the four baseline test results in the table above. Add a compact comparison table or figure and use per-class F1/confusion matrices to explain errors. Report the class-weighting numbers separately and call out its accuracy–macro-F1 trade-off. Include the number of runs and avoid implying statistical significance. |
+| **Conclusion** | Summarize that the four-group task performed better in these runs, the larger dataset alone did not yield strong results, and performance remains limited. Describe increased CNN complexity as a proposed next improvement unless a separate deeper-model experiment and its results are added to the evidence. |
+| **References** | Cite the original Face-Age-10K and UTKFace sources, relevant peer-reviewed work on facial age estimation/classification, and any software or methods sources required by the chosen citation style. Verify bibliographic details from the original publications. |
+
+For reproducibility, the report should make clear which numbers come from the original baseline runs and which come from the additional weighted-loss comparison. It should also acknowledge the limitations of one run per condition for the weighting comparison, class imbalance, possible dataset differences, and the modest performance. Do not describe the deeper-CNN direction as a measured improvement: no such run is included in this repository at present.
+
 ## Limitations
 
 The datasets and labels are uneven across age groups, and the models often confuse neighboring intervals. Results come from limited runs and should not be treated as evidence of reliable real-world age estimation. The project studies approximate age-group classification for coursework, not identity verification or consequential decisions about people.
+
+Dataset images are not redistributed here. The archived UTKFace split files include paths from the original machine and need local path updates before those notebooks can be rerun. The recorded experiments also do not include repeated seeds or uncertainty estimates, so small score differences should be interpreted cautiously.
